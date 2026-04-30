@@ -1,59 +1,69 @@
-function goToForm(){
-document.getElementById("rankForm").scrollIntoView({
-behavior:"smooth"
-});
+function goToForm() {
+  document.getElementById("rankForm").scrollIntoView({
+    behavior: "smooth"
+  });
 }
 
 document.getElementById("leadForm")
-.addEventListener("submit", async function(e){
+.addEventListener("submit", async function (e) {
 
-e.preventDefault();
+  e.preventDefault();
 
-const formData = new FormData(this);
+  const formData = new FormData(this);
 
-const data = {
-fullName: formData.get("fullName"),
-mobile: formData.get("mobile"),
-rank: formData.get("rank"),
-studentClass: formData.get("studentClass")
-};
+  const data = {
+    fullName: formData.get("fullName"),
+    mobile: formData.get("mobile"),
+    rank: formData.get("rank"),
+    studentClass: formData.get("studentClass")
+  };
 
-const res = await fetch("/submit-form",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(data)
-});
+  try {
 
-const result = await res.json();
+    const res = await fetch("/api/submit-form", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
 
-document.getElementById("msg").innerText=result.message;
+    const result = await res.json();
 
-if(result.success){
-this.reset();
-}
+    document.getElementById("msg").innerText = result.message;
+
+    if (result.success) {
+      this.reset();
+    }
+
+  } catch (error) {
+    document.getElementById("msg").innerText =
+      "Something went wrong!";
+  }
 
 });
 
 let totalSeconds =
-5*24*60*60 + 12*60*60 + 45*60 + 30;
+5 * 24 * 60 * 60 +
+12 * 60 * 60 +
+45 * 60 +
+30;
 
-function updateTimer(){
+function updateTimer() {
 
-let d=Math.floor(totalSeconds/86400);
-let h=Math.floor((totalSeconds%86400)/3600);
-let m=Math.floor((totalSeconds%3600)/60);
-let s=totalSeconds%60;
+  let d = Math.floor(totalSeconds / 86400);
+  let h = Math.floor((totalSeconds % 86400) / 3600);
+  let m = Math.floor((totalSeconds % 3600) / 60);
+  let s = totalSeconds % 60;
 
-document.getElementById("timer").innerText=
-String(d).padStart(2,"0")+" : "+
-String(h).padStart(2,"0")+" : "+
-String(m).padStart(2,"0")+" : "+
-String(s).padStart(2,"0");
+  document.getElementById("timer").innerText =
+    String(d).padStart(2, "0") + " : " +
+    String(h).padStart(2, "0") + " : " +
+    String(m).padStart(2, "0") + " : " +
+    String(s).padStart(2, "0");
 
-if(totalSeconds>0) totalSeconds--;
+  if (totalSeconds > 0) totalSeconds--;
 }
 
-setInterval(updateTimer,1000);
+setInterval(updateTimer, 1000);
 updateTimer();
